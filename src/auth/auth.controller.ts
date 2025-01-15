@@ -21,6 +21,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('test')
   async test() {
-    return 'test';
+    return { message: 'Protedted' };
   }
 }

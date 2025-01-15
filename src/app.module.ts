@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { EventsModule } from './events/events.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma/prisma.service';
+import { EventsModule } from './events/events.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,8 +14,9 @@ import { PrismaService } from './prisma/prisma.service';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    EventsModule,
     AuthModule,
+    UsersModule,
+    EventsModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, PrismaService],

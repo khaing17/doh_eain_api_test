@@ -32,21 +32,38 @@ export class AuthService {
     return result;
   }
 
-  async login(data: Omit<User, 'password'>) {
-    const payload = { useremail: data.email, sub: data.id };
+  async login(data: User): Promise<{ access_token: string }> {
+    const user = await this.userService.findByEmail(data.email);
+    if (!user) {
+      throw new UnauthorizedException('Invalid Credentials!');
+    }
+    const passwordMatch = await bcrypt.compare(data.password, user.password);
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const payload = { useremail: user.email, sub: user.id };
+
     return {
       access_token: await this.jwt.signAsync(payload),
     };
   }
 
-  async register(data: CreateUserDto) {
+  async register(data: CreateUserDto): Promise<{ access_token: string }> {
     const isUserExit = await this.userService.findByEmail(data.email);
     if (isUserExit) {
-      throw new BadRequestException('User already exists!');
+      throw new BadRequestException('Email already in use!');
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(data.password, salt);
 
-    return this.userService.create({ ...data, password: hashPassword });
+    const newUser = await this.userService.create({
+      ...data,
+      password: hashPassword,
+    });
+
+    const payload = { sub: newUser.id, email: newUser.email };
+    const accessToken = await this.jwt.signAsync(payload);
+    return { access_token: accessToken };
   }
 }

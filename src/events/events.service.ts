@@ -1,26 +1,55 @@
-import { Injectable } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Event } from '@prisma/client';
 import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
 export class EventsService {
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
+  constructor(private prisma: PrismaService) {}
+  create(createEventDto: CreateEventDto): Promise<Event> {
+    return this.prisma.event.create({ data: createEventDto });
   }
 
-  findAll() {
-    return `This action returns all events`;
+  findAll(args: any): Promise<Event[]> {
+    return this.prisma.event.findMany(args);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
+  async findOne(id: string): Promise<Event> {
+    const event = await this.prisma.event.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!event) {
+      throw new NotFoundException(`Event with id ${id} not found`);
+    }
+    return event;
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
+    try {
+      return await this.prisma.event.update({
+        where: {
+          id,
+        },
+        data: updateEventDto,
+      });
+    } catch (e) {
+      throw new NotFoundException(`Event with id ${id} not found`);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  async remove(id: string) {
+    try {
+      await this.prisma.event.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (e) {
+      throw new NotFoundException(`Event with id ${id} not found`);
+    }
   }
 }
