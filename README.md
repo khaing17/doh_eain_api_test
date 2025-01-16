@@ -66,3 +66,10 @@ To run tests, run the following command
   npm run test
 ```
 
+## API DOC
+
+[Documentation](https://documenter.getpostman.com/view/24797534/2sAYQZJCnn)
+
+
+## Test Rate Limit
+To test the rate limiting, you can attempt to log in with an incorrect password. The rate limit allows a maximum of 3 attempts within one minute.
