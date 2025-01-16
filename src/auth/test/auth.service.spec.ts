@@ -19,3 +19,4 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 });
+console.log();
