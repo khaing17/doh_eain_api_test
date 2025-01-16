@@ -1,21 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventsService } from './events.service';
+import { AuthService } from '../auth.service';
+import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { FilterService } from 'src/shared/filter/filter.service';
 import { JwtService } from '@nestjs/jwt';
 
-describe('EventsService', () => {
-  let service: EventsService;
+describe('AuthService', () => {
+  let service: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EventsService, PrismaService, FilterService, JwtService],
+      providers: [AuthService, UsersService, PrismaService, JwtService],
     }).compile();
 
-    service = module.get<EventsService>(EventsService);
+    service = module.get<AuthService>(AuthService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 });
+console.log();
