@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Event } from '@prisma/client';
@@ -30,6 +35,14 @@ export class EventsService {
 
   async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
     try {
+      const existingEvent = await this.prisma.event.findUnique({
+        where: { id },
+      });
+
+      if (!existingEvent) {
+        throw new NotFoundException(`Event with id ${id} not found`);
+      }
+
       return await this.prisma.event.update({
         where: {
           id,
@@ -37,7 +50,7 @@ export class EventsService {
         data: updateEventDto,
       });
     } catch (e) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException();
     }
   }
 
@@ -49,7 +62,7 @@ export class EventsService {
         },
       });
     } catch (e) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException();
     }
   }
 }

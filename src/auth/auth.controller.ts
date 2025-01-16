@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,8 @@ export class AuthController {
   }
 
   @Post('login')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 5, ttl: 6000 } })
   async login(@Body() data: User) {
     return this.authService.login(data);
   }
