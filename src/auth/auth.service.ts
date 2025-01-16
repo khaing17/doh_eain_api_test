@@ -54,7 +54,6 @@ export class AuthService {
     if (isUserExit) {
       throw new BadRequestException('Email already in use!');
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(data.password, salt);
 

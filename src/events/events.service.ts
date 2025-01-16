@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Event } from '@prisma/client';
@@ -35,7 +36,6 @@ export class EventsService {
         },
         data: updateEventDto,
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
@@ -48,7 +48,6 @@ export class EventsService {
           id,
         },
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
